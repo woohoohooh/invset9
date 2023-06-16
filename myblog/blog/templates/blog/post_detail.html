@@ -1,0 +1,23 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+    <h1>{{ post.title }}</h1>
+    <p>{{ post.content }}</p>
+
+    {% include 'blog/comments.html' %}
+
+    <h2>Add a Comment</h2>
+    <form method="post" action="{% url 'add_comment' post.id %}">
+        {% csrf_token %}
+        <input type="hidden" name="post_id" value="{{ post.id }}">
+        <div>
+            <label for="name">Name:</label>
+            <input type="text" id="title" name="title" required><br><br>
+        </div>
+        <div>
+            <label for="content">Comment:</label>
+            <textarea id="content" name="content" required></textarea><br><br><br>
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+{% endblock %}
