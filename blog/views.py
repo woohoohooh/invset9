@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Post, Comment, Company, Advantage, Review
+from django.views import View
 
 def post_list(request):
     posts = Post.objects.all()
@@ -42,6 +43,7 @@ def company_ratings(request):
 def company_detail(request, company_id):
     company = get_object_or_404(Company, pk=company_id)
     reviews = company.reviews.all()
+    security_advantages = company.advantages.filter(position=1).order_by('-count')
 
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -57,7 +59,7 @@ def company_detail(request, company_id):
         review.save()
         return redirect('company_detail', company_id=company.id)
 
-    return render(request, 'blog/company_detail.html', {'company': company, 'reviews': reviews})
+    return render(request, 'blog/company_detail.html', {'company': company, 'reviews': reviews, 'security_advantages': security_advantages})
 
 
 def add_advantage(request, company_id):
@@ -85,13 +87,23 @@ def add_advantage(request, company_id):
 
     return redirect('company_detail', company_id=company_id)
 
-
-
-
 def increment_advantage(request, advantage_id):
-    print(3)
     advantage = get_object_or_404(Advantage, pk=advantage_id)
-    advantage.count += 1
-    advantage.save()
+
+    if advantage.position == 1:
+        advantages = Advantage.objects.filter(position=1)
+        total_count = sum([advantage.count for advantage in advantages])
+
+        for adv in advantages:
+            if adv.id == advantage.id:
+                adv.count += 1  # Увеличение процента для выбранного преимущества
+            else:
+                adv.count = round(adv.count / (total_count - 1) * 100, 2)  # Пересчет процентного соотношения для остальных преимуществ
+
+            adv.save()
+
     return redirect('company_detail', company_id=advantage.company.id)
+
+
+
 
