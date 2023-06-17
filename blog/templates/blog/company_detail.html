@@ -2,30 +2,108 @@
 
 {% block content %}
     <style>
-.blue-text {
-    color: blue;
-}
+        .blue-text {
+            color: blue;
+        }
 
-.red-text {
-    color: red;
-}
+        .red-text {
+            color: red;
+        }
+        .security-block {
+        border: 1px solid #ccc;
+        padding: 10px;
+        }
+        .advantage-column {
+        border: 1px solid #ccc;
+        padding: 10px;
+        }
     </style>
+<div style="padding: 20px;">
     <h1>{{ company.name }}</h1>
     <p>Category: {{ company.category }}</p>
     <p>Rating: {{ company.rating }}</p>
 
     <div class="advantages-container">
         <div class="advantage-column">
-            <h2>Security</h2>
+
+ <div class="security-block">
+    <h2>Security</h2>
+
+    <table class="criteria-table">
+        <tr>
+            <td>Asset secured</td>
+            <td>Emission limit</td>
+            <td>Liquidity</td>
+            <td><strong>SCORE</strong></td>
+        </tr>
+        <tr>
+            <td>{{ security_scores.asset_secured_score }}</td>
+            <td>{{ security_scores.emission_limit_score }}</td>
+            <td>{{ security_scores.liquidity_score }}</td>
+            <td>{{ security_scores.total_score }}</td>
+        </tr>
+    </table>
+</div><br>
+
+            <table>
+  {% for advantage in security_advantages %}
+    <form method="POST" action="{% url 'increment_advantage' advantage_id=advantage.id %}">
+      {% csrf_token %}
+      <tr>
+        <td>{{ advantage.advantage }}</td>
+        <td><span class="{% if advantage.mark %}blue-text{% else %}red-text{% endif %}">
+               {{ advantage.count }}%
+            </span></td>
+        <td><input value="+" type="submit"></td>
+      </tr>
+    </form>
+  {% empty %}
+    <tr>
+      <td colspan="3">No advantages</td>
+    </tr>
+  {% endfor %}
+</table>
+
+            <form method="post" action="{% url 'add_advantage' company.id %}">
+                {% csrf_token %}
+                <input type="hidden" name="position" value="1">
+                <input name="advantage" required>
+                <select name="mark" required>
+                    <option value="positive">+</option>
+                    <option value="negative">-</option>
+                </select>
+                <button type="submit">Add Advantage</button>
+            </form>
+        </div>
+
+        <div class="advantage-column">
+
+<div class="security-block">
+    <h2>Team</h2>
+
+    <table class="criteria-table">
+        <tr>
+            <td>Decentralized</td>
+            <td>Performace</td>
+            <td><strong>SCORE</strong></td>
+        </tr>
+        <tr>
+            <td>{{ team_scores.decentralized_score }}</td>
+            <td>{{ team_scores.performace_score }}</td>
+            <td>{{ team_scores.total_score }}</td>
+        </tr>
+    </table>
+</div><br>
+
             <ul>
-                {% for advantage in security_advantages %}
+                {% for advantage in team_advantages %}
                     <form method="POST" action="{% url 'increment_advantage' advantage_id=advantage.id %}">
                         {% csrf_token %}
                         <li>
                             {{ advantage.advantage }}
                             <span class="{% if advantage.mark %}blue-text{% else %}red-text{% endif %}">
-                            ({{ advantage.count }}%)
-                        </span>
+                                ({{ advantage.count }}%)
+                            </span>
                             <input value="+" type="submit">
                         </li>
                     </form>
@@ -35,7 +113,7 @@
             </ul>
             <form method="post" action="{% url 'add_advantage' company.id %}">
                 {% csrf_token %}
-                <input type="hidden" name="position" value="1">
+                <input type="hidden" name="position" value="2">
                 <input name="advantage" required></input>
                 <select name="mark" required>
                     <option value="positive">+</option>
@@ -46,16 +124,35 @@
         </div>
 
         <div class="advantage-column">
-            <h2>Team</h2>
+
+<div class="security-block">
+    <h2>Product</h2>
+
+    <table class="criteria-table">
+        <tr>
+            <td>Performace</td>
+            <td>APY 1yr</td>
+            <td>APY 5yr</td>
+            <td><strong>SCORE</strong></td>
+        </tr>
+        <tr>
+            <td>{{ product_scores.performace_score }}</td>
+            <td>{{ product_scores.apy_1yr_score }}</td>
+            <td>{{ product_scores.apy_5yr_score }}</td>
+            <td>{{ product_scores.total_score }}</td>
+        </tr>
+    </table>
+</div><br>
+
             <ul>
-                {% for advantage in security_advantages %}
+                {% for advantage in product_advantages %}
                     <form method="POST" action="{% url 'increment_advantage' advantage_id=advantage.id %}">
                         {% csrf_token %}
                         <li>
                             {{ advantage.advantage }}
                             <span class="{% if advantage.mark %}blue-text{% else %}red-text{% endif %}">
-                            ({{ advantage.count }}%)
-                        </span>
+                                ({{ advantage.count }}%)
+                            </span>
                             <input value="+" type="submit">
                         </li>
                     </form>
@@ -65,8 +162,8 @@
             </ul>
             <form method="post" action="{% url 'add_advantage' company.id %}">
                 {% csrf_token %}
-                <input type="hidden" name="position" value="1">
-                <input name="advantage" required></input>
+                <input type="hidden" name="position" value="3">
+                <input name="advantage" required>
                 <select name="mark" required>
                     <option value="positive">+</option>
                     <option value="negative">-</option>
@@ -74,65 +171,37 @@
                 <button type="submit">Add Advantage</button>
             </form>
         </div>
+    </div>
 
-        <div class="advantage-column">
-            <h2>Product</h2>
-            <ul>
-                {% for advantage in security_advantages %}
-                    <form method="POST" action="{% url 'increment_advantage' advantage_id=advantage.id %}">
-                        {% csrf_token %}
-                        <li>
-                            {{ advantage.advantage }}
-                            <span class="{% if advantage.mark %}blue-text{% else %}red-text{% endif %}">
-                            ({{ advantage.count }}%)
-                        </span>
-                            <input value="+" type="submit">
-                        </li>
-                    </form>
-                {% empty %}
-                    <li>No advantages</li>
-                {% endfor %}
-            </ul>
-            <form method="post" action="{% url 'add_advantage' company.id %}">
-                {% csrf_token %}
-                <input type="hidden" name="position" value="1">
-                <input name="advantage" required></input>
-                <select name="mark" required>
-                    <option value="positive">+</option>
-                    <option value="negative">-</option>
-                </select>
-                <button type="submit">Add Advantage</button>
-            </form>
-        </div>
-
-    <br><br><br><br>
+    <br>
     <center>
-        <h2>Отзывы</h2>
+        <h2>Reviews &rarr; {{ company.name }}</h2><br>
         {% for review in reviews %}
-            <p>Имя: {{ review.name }}</p>
-            <p>Дата: {{ review.date }}</p>
-            <p>Отзыв: {{ review.comment }}</p>
-            <p>Тип: {% if review.rating == True %}<span class="red-text">Положительный</span>{% else %}<span class="blue-text">Негативный</span>{% endif %}</p>
+            <p>Name: {{ review.name }}</p>
+            <p>Date: {{ review.date }}</p>
+            <p>Review: {{ review.comment }}</p>
+            <p>Type: {% if review.rating == True %}<span class="blue-text">Positive</span>{% else %}<span class="red-text">Negative</span>{% endif %}</p>
         {% empty %}
-            <p>Пока нет отзывов</p>
+            <p>No reviews</p>
         {% endfor %}
 
-        <h2>Оставить отзыв</h2>
+        <br><br><h2>Your feedback about {{ company.name }}</h2><br>
         <form method="post" action="{% url 'company_detail' company_id=company.id %}">
             {% csrf_token %}
-            <label for="name">Имя:</label>
+            <label for="name">Name:</label>
             <input type="text" name="name" id="name" required><br><br>
 
-            <label for="rating">Оценка:</label>
-            <select name="rating" id="rating" required>
-                <option value="positive">Положительная</option>
-                <option value="negative">Отрицательная</option>
-            </select><br><br>
-
-            <label for="comment">Комментарий:</label>
+            <label for="comment">A comment:</label>
             <textarea name="comment" id="comment" required></textarea><br><br>
 
-            <button type="submit">Отправить</button>
-        </form>
+            <label for="rating">Evaluation:</label>
+            <select name="rating" id="rating" required>
+                <option value="positive">Positive</option>
+                <option value="negative">Negative</option>
+            </select><br><br>
+
+            <button type="submit">Leave feedback</button>
+        </form><br><br>
     </center>
+</div>
 {% endblock %}

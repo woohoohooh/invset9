@@ -34,3 +34,40 @@
 .advantage-column ul li {
     margin-bottom: 5px;
 }
+
+.criteria {
+    display: flex;
+    justify-content: space-between;
+}
+
+.criteria-row {
+    display: flex;
+}
+
+.criteria-item {
+    flex: 1;
+    text-align: center;
+}
+
+.criteria-name {
+    font-weight: bold;
+}
+
+.criteria-score {
+    margin-top: 5px;
+}
+
+.criteria-table {
+    width: 100%;
+}
+
+.criteria-table th,
+.criteria-table td {
+    padding: 10px;
+    text-align: center;
+}
+
+.criteria-table th {
+    font-weight: bold;
+}
+
