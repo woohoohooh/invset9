@@ -45,18 +45,24 @@
     </table>
 </div><br>
 
-            <table>
-  {% for advantage in security_advantages %}
-    <form method="POST" action="{% url 'increment_advantage' advantage_id=advantage.id %}">
-      {% csrf_token %}
-      <tr>
-        <td>{{ advantage.advantage }}</td>
-        <td><span class="{% if advantage.mark %}blue-text{% else %}red-text{% endif %}">
-               {{ advantage.count }}%
-            </span></td>
-        <td><input value="+" type="submit"></td>
-      </tr>
-    </form>
+  <table>
+    {% for advantage in security_advantages %}
+        <form method="POST" action="{% url 'increment_advantage' advantage_id=advantage.id %}">
+          {% csrf_token %}
+          <tr>
+            <td style="padding: 10px;">
+                {{ advantage.advantage }}
+            </td>
+            <td style="padding: 10px;">
+                <span class="{% if advantage.mark %}blue-text{% else %}red-text{% endif %}">
+                   {{ advantage.count }}%
+                </span>
+            </td>
+            <td style="padding: 10px;">
+                <input value="+" type="submit">
+            </td>
+          </tr>
+        </form>
   {% empty %}
     <tr>
       <td colspan="3">No advantages</td>
@@ -72,7 +78,7 @@
                     <option value="positive">+</option>
                     <option value="negative">-</option>
                 </select>
-                <button type="submit">Add Advantage</button>
+                <input type="submit" value="Add Advantage">
             </form>
         </div>
 
@@ -95,22 +101,30 @@
     </table>
 </div><br>
 
-            <ul>
+            <table>
                 {% for advantage in team_advantages %}
                     <form method="POST" action="{% url 'increment_advantage' advantage_id=advantage.id %}">
                         {% csrf_token %}
-                        <li>
+                        <tr>
+                            <td style="padding: 10px;">
                             {{ advantage.advantage }}
+                        </td>
+                        <td style="padding: 10px;">
                             <span class="{% if advantage.mark %}blue-text{% else %}red-text{% endif %}">
-                                ({{ advantage.count }}%)
+                                {{ advantage.count }}%/td>
                             </span>
+                        </td>
+                        <td style="padding: 10px;">
                             <input value="+" type="submit">
-                        </li>
+                        </td>
+                    </tr>
                     </form>
                 {% empty %}
-                    <li>No advantages</li>
-                {% endfor %}
-            </ul>
+                <tr>
+                  <td colspan="3">No advantages</td>
+                </tr>
+              {% endfor %}
+            </table>
             <form method="post" action="{% url 'add_advantage' company.id %}">
                 {% csrf_token %}
                 <input type="hidden" name="position" value="2">
@@ -119,7 +133,7 @@
                     <option value="positive">+</option>
                     <option value="negative">-</option>
                 </select>
-                <button type="submit">Add Advantage</button>
+                <input type="submit" value="Add Advantage">
             </form>
         </div>
 
@@ -144,22 +158,30 @@
     </table>
 </div><br>
 
-            <ul>
+            <table>
                 {% for advantage in product_advantages %}
                     <form method="POST" action="{% url 'increment_advantage' advantage_id=advantage.id %}">
                         {% csrf_token %}
-                        <li>
-                            {{ advantage.advantage }}
-                            <span class="{% if advantage.mark %}blue-text{% else %}red-text{% endif %}">
-                                ({{ advantage.count }}%)
-                            </span>
-                            <input value="+" type="submit">
-                        </li>
-                    </form>
+                        <tr>
+                            <td style="padding: 10px;">
+                                {{ advantage.advantage }}
+                            </td>
+                            <td style="padding: 10px;">
+                                <span class="{% if advantage.mark %}blue-text{% else %}red-text{% endif %}">
+                                    ({{ advantage.count }}%)
+                                </span>
+                            </td>
+                            <td style="padding: 10px;">
+                                <input value="+" type="submit">
+                            </td>
+                        </tr>
+                        </form>
                 {% empty %}
-                    <li>No advantages</li>
-                {% endfor %}
-            </ul>
+                <tr>
+                  <td colspan="3">No advantages</td>
+                </tr>
+              {% endfor %}
+            </table>
             <form method="post" action="{% url 'add_advantage' company.id %}">
                 {% csrf_token %}
                 <input type="hidden" name="position" value="3">
@@ -168,7 +190,7 @@
                     <option value="positive">+</option>
                     <option value="negative">-</option>
                 </select>
-                <button type="submit">Add Advantage</button>
+                <input type="submit" value="Add Advantage">
             </form>
         </div>
     </div>
