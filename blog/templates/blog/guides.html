@@ -4,7 +4,7 @@
 {% for guide in guides %}
 <div style="padding: 20px;">
   <h3>{{ guide.title }}</h3>
-  {{ guide.content }}
+  {{ guide.content|linebreaksbr }}
 </div>
 {% endfor %}<br><br>
 {% endblock %}

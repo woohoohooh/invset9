@@ -1,10 +1,21 @@
 <nav><br>
     <ul>
         <center><big>
-            <a href="{% url 'post_list' %}">News</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <a href="{% url 'company_ratings' %}">Invest</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <a href="{% url 'guides' %}">Guides</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <a href="{% url 'about' %}">About</a>
+            <div class="dropdown">
+                <li><a href="{% url 'post_list' %}" {% if request.resolver_match.url_name == 'post_list' %}class="active"{% endif %}>News</a></li>
+                <li class="spacer"></li>
+                <li><a href="{% url 'company_ratings' %}" {% if request.resolver_match.url_name == 'company_ratings' %}class="active"{% endif %}>Invest</a></li>
+                <li class="spacer"></li>
+                <li><a href="{% url 'guides' %}" {% if request.resolver_match.url_name == 'guides' %}class="active"{% endif %}>Guides</a></li>
+                <li class="spacer"></li>
+                <li><a href="{% url 'about' %}" {% if request.resolver_match.url_name == 'about' %}class="active"{% endif %}>About</a></li>
+            </div>
         </big></center>
     </ul>
 </nav>
+
+
+
+
+
+

@@ -1,19 +1,25 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Post, Comment, Company, Advantage, Review, Guides, About, SecurityScore
-from django.db.models import Sum, Avg
+from .models import Post, Comment, Company, Advantage, Review, Guides, About, SecurityScore, Category
+from django.db.models import Sum, Avg,  F, Sum
+from django.db import transaction
 
 
 def guides(request):
     guides = Guides.objects.all()
-    return render(request, 'blog/guides.html', {'guides': guides})
+    return render(request, 'blog/guides.html', {'guides': guides, 'request': request})
 
 def about(request):
     about = About.objects.first()
-    return render(request, 'blog/about.html', {'about': about})
+    return render(request, 'blog/about.html', {'about': about, 'request': request})
 
 def post_list(request):
     posts = Post.objects.all()
-    return render(request, 'blog/post_list.html', {'posts': posts})
+    categories = Category.objects.all()
+    return render(request, 'blog/post_list.html', {'posts': posts, 'categories': categories, 'request': request})
+
+def company_ratings(request):
+    companies = Company.objects.all()
+    return render(request, 'blog/companies.html', {'companies': companies, 'request': request})
 
 def post_create(request):
     if request.method == 'POST':
@@ -30,7 +36,7 @@ def post_detail(request, pk):
     comments = post.comments.all()
     context = {
         'post': post,
-        'comments': comments,
+        'comments': comments
     }
     return render(request, 'blog/post_detail.html', context)
 
@@ -38,16 +44,11 @@ def add_comment(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     if request.method == 'POST':
         name = request.POST.get('name')
-        email = request.POST.get('email')
         content = request.POST.get('content')
-        if name and email and content:
-            comment = Comment(post=post, name=name, email=email, content=content)
+        if name and content:
+            comment = Comment(post=post, name=name, content=content)
             comment.save()
     return redirect('post_detail', pk=post_id)
-
-def company_ratings(request):
-    companies = Company.objects.all()
-    return render(request, 'blog/companies.html', {'companies': companies})
 
 def calculate_total_score(company):
     security_scores = company.securityscore_set.first()
@@ -137,15 +138,34 @@ def increment_advantage(request, advantage_id):
             advantage.count += 1
             advantage.save()
 
-            # Обновление процентов для остальных преимуществ в столбце
-            total_count = Advantage.objects.filter(position=advantage.position).aggregate(total_count=Sum('count'))['total_count']
-            for adv in Advantage.objects.filter(position=advantage.position):
-                adv.count = round(adv.count / total_count * 100, 2)
-                adv.save()
+            # Получение всех преимуществ в столбце для данной компании
+            advantages = Advantage.objects.filter(company=advantage.company, position=advantage.position)
+
+            # Подсчет общего количества преимуществ в столбце
+            total_count = advantages.aggregate(total_count=Sum('count'))['total_count']
+
+            # Проверка, чтобы общий процент не превышал 100%
+            if total_count > 100:
+                advantages.update(count=F('count') * 100 / total_count)
+                total_count = 100
+
+            # Распределение процентов между преимуществами
+            remaining_percent = 100 - total_count
+            remaining_advantages = advantages.exclude(id=advantage.id)
+            remaining_count = remaining_advantages.count()
+
+            if remaining_count > 0:
+                remaining_percent_per_advantage = remaining_percent / remaining_count
+
+                for adv in remaining_advantages:
+                    adv.count += remaining_percent_per_advantage
+                    adv.save()
+
+            # Проверка, чтобы общий процент равнялся 100%
+            total_count = advantages.aggregate(total_count=Sum('count'))['total_count']
+            if total_count < 100:
+                remaining_percent = 100 - total_count
+                advantage.count += remaining_percent
+                advantage.save()
 
     return redirect('company_detail', company_id=advantage.company.id)
-
-
-
-
-

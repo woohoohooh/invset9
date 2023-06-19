@@ -1,12 +1,15 @@
 {% extends 'blog/base.html' %}
 
 {% block content %}
+<div style="padding: 20px;">
+    <a href="{% url 'post_list' %}" {% if request.resolver_match.url_name == 'post_list' %}class="active"{% endif %}>&larr; News</a>
     <h1>{{ post.title }}</h1>
-    <p>{{ post.content }}</p>
+    <p>Category: {{ post.category.name }}</p><br>
+    <p>{{ post.content|linebreaksbr }}</p><br>
 
-    {% include 'blog/comments.html' %}
+    {% include 'blog/comments.html' %}<br>
 
-    <h2>Add a Comment</h2>
+    <h3>Add a Comment</h3>
     <form method="post" action="{% url 'add_comment' post.id %}">
         {% csrf_token %}
         <input type="hidden" name="post_id" value="{{ post.id }}">
@@ -15,13 +18,10 @@
             <input type="text" id="name" name="name" required><br><br>
         </div>
         <div>
-            <label for="name">Enail:</label>
-            <input type="text" id="email" name="email" required><br><br>
-        </div>
-        <div>
             <label for="content">Comment:</label>
             <textarea id="content" name="content" required></textarea><br><br><br>
         </div>
         <button type="submit">Submit</button>
     </form>
+</div><br><br>
 {% endblock %}

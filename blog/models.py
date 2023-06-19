@@ -40,13 +40,16 @@ class Post(models.Model):
     content = models.TextField()
     pub_date = models.DateTimeField(auto_now_add=True)
     comments_enabled = models.BooleanField(default=True)
+    category = models.ForeignKey('Category', on_delete=models.SET_NULL, null=True)
     def __str__(self):
         return self.title
+
+class Category(models.Model):
+    name = models.CharField(max_length=50)
 
 class Comment(models.Model):
     post = models.ForeignKey('Post', on_delete=models.CASCADE, related_name='comments')
     name = models.CharField(max_length=255)
-    email = models.EmailField()
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     def __str__(self):
@@ -64,7 +67,6 @@ class Advantage(models.Model):
         return self.advantage
 
 class Position(models.Model):
-    # Другие поля модели Position
     name = models.CharField(max_length=100)
     email = models.EmailField()
     rating = models.BooleanField()

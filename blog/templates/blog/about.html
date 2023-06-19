@@ -2,7 +2,7 @@
 
 {% block content %}<br><br>
 <div style="padding: 20px;">
-<h1>{{ about.title }}</h1>
-    {{ about.content }}
-</div>
+<h1>{{ about.title }}</h1><br>
+    {{ about.content|linebreaksbr }}
+</div><br><br>
 {% endblock %}

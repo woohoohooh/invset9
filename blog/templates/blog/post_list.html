@@ -2,12 +2,13 @@
 
 {% block content %}
     <div style="padding: 20px;">
-    <h1>Crypto News</h1>
+    <h2>Crypto News</h2>
     </div>
     {% for post in posts %}
     <div style="padding: 20px;">
         <h2><a href="{% url 'post_detail' post.id %}">{{ post.title }}</a></h2>
+        <p>Category: {{ post.category.name }}</p>
         <p>{{ post.content }}</p>
     </div>
-    {% endfor %}
+    {% endfor %}<br><br>
 {% endblock %}

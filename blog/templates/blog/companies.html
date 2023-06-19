@@ -1,18 +1,18 @@
 {% extends 'blog/base.html' %}
 
 {% block content %}<br><br><br>
-    <center><h1>Invest Products Rating</h1></center><br>
+    <center><h2>Invest Products Rating</h2></center><br>
     <table align="center">
         <tr>
-            <th>Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-            <th>Category&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-            <th>Rating</th>
+            <th><big>Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</big></th>
+            <th><big>Category&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</big></th>
+            <th><big>Rating</big></th>
         </tr>
         {% for company in companies %}
         <tr>
-            <td><a href="{% url 'company_detail' company.id %}">{{ company.name }}</a></td>
-            <td>{{ company.category }}</td>
-            <td>{{ company.rating }}</td>
+            <td><big><a href="{% url 'company_detail' company.id %}">{{ company.name }}</a></big></td>
+            <td><big>{{ company.category }}</big></td>
+            <td><big>{{ company.rating }}</big></td>
         </tr>
         {% endfor %}
     </table>
